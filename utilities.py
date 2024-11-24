@@ -24,103 +24,6 @@ def get_openai_key():
 
     return openai_key
 
-def reformat_npcs(npcs):
-    """ 
-    helper function to make the data tidy
-    """
-    new_npcs = []
-    for npc in npcs:
-
-        # include a name field in each for filtering
-        name = npc['name']
-
-        for key,value in npc.items():
-            doc = {"name":name, "text":f"my {key} is {value}"}
-            new_npcs.append(doc)
-    return new_npcs
-
-def marqo_template():
-    """
-    holds the prompt template
-    """
-    template = """The following is a conversation with a fictional superhero in a movie. 
-    BACKGROUND is provided which describes some the history and powers of the superhero. 
-    The conversation should always be consistent with this BACKGROUND. 
-    Continue the conversation as the superhero in the movie and **always** use something from the BACKGROUND. 
-    You are very funny and talkative and **always** talk about your superhero skills in relation to your BACKGROUND.
-    BACKGROUND:
-    =========
-    {summaries}
-    =========
-    Conversation:
-    {conversation}
-    """
-    return template
-
-def marqo_prompt(template = marqo_template()):
-    """ 
-    thin wrapper for prompt creation
-    """
-    PROMPT = PromptTemplate(template=template, input_variables=["summaries", "conversation"])
-    return PROMPT
-
-def read_md_file(filename):
-    """ 
-    generic md/txt file reader
-    """
-    with open(filename, 'r') as f:
-        return f.read()
-
-def clean_md_text(text):
-    # Remove code blocks
-    text = re.sub(r'```.*?```', '', text, flags=re.DOTALL)
-    
-    # Remove inline code
-    text = re.sub(r'`.*?`', '', text)
-    
-    # Remove headings
-    text = re.sub(r'#+.*?\n', '', text)
-    
-    # Remove horizontal lines
-    text = re.sub(r'---*', '', text)
-    
-    # Remove links
-    text = re.sub(r'\[.*?\]\(.*?\)', '', text)
-    
-    # Remove emphasis
-    text = re.sub(r'\*\*.*?\*\*', '', text)
-    text = re.sub(r'\*.*?\*', '', text)
-    
-    # Remove images
-    text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
-    
-    return text
-
-'''
-def load_all_files(files):
-    """ 
-    wrapper to load and clean text files
-    """
-
-    results = []
-    for f in files:
-        text = read_md_file(f)
-        splitted_text = split_text(text, split_length=10, split_overlap=3)
-        cleaned_text = [clean_md_text(_text) for _text in splitted_text]   
-        _files = [f]*(len(cleaned_text))
-
-        results += list(zip(_files, splitted_text, cleaned_text))
-
-    return pd.DataFrame(results, columns=['filename', 'text', 'cleaned_text'])
-'''
-'''def load_data():
-    """  
-    wrapper to load all the data files
-    """
-    marqo_docs_directory = 'data/'
-    files = glob.glob(marqo_docs_directory + 'p*.txt', recursive=True)
-    files = [f for f in files if not f.startswith('_')]
-    return load_all_files(files)'''
 
 def qna_prompt():
     """ 
@@ -138,16 +41,6 @@ def qna_prompt():
     PROMPT = PromptTemplate(template=template, input_variables=["summaries", "question"])
     return PROMPT
 
-model_cache = dict()
-def load_ce(model_name='cross-encoder/ms-marco-MiniLM-L-6-v2'):
-    """ 
-    loads the sbert cross-encoder model
-    """
-
-    model = AutoModelForSequenceClassification.from_pretrained(model_name)
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    
-    return model, tokenizer
 
 def predict_ce(query, texts, model=None, key='ce'):
     """ 
