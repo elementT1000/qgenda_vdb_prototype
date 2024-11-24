@@ -6,12 +6,23 @@ import re
 from typing import List, Literal
 import numpy as np
 import torch
+import os
 
 from transformers import (
     AutoTokenizer, 
     AutoModelForSequenceClassification,
     GPT2TokenizerFast
 )
+
+def get_openai_key():
+    openai_key = os.getenv('OPENAI_API_KEY')
+
+    if openai_key:
+        print("OpenAI key accessed.")
+    else:
+        print("API Key not found. Check your environment variables.")
+
+    return openai_key
 
 def reformat_npcs(npcs):
     """ 
