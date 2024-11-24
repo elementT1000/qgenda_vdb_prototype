@@ -10,11 +10,11 @@ In the last two years, LLM's have exploded on to the business scene. They perfor
 
 For example, it would be useful to have an LLM use documentation created by your company to generate a response that uses facts and citations to adapt a response to a very specific situation. Think of it as an internal search function, sort of like what Gemini currently does in Google, but for your data. 
 
-![alt text](assets\geminisearch.png)
+![alt text](assets/geminisearch.png)
 
 This fills in the gaps of an LLM, enriching it with specific technical data and allowing it to cite sources that are relevant to you.
 
-![alt text](assets\SystemOverview.png)
+![alt text](assets/SystemOverview.png)
 
 
 ## Prerequisites
