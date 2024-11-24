@@ -1,4 +1,4 @@
-# A Prototype for Generative Search of a Knowledge Base
+# A Prototype for Retrieval Augmented Generation with a Knowledge Base
 This project uses a series of rudimentary tools to create a system that uses a "Knowledge Base" to give a Large Language Model (LLM) information to generate answers optimized for business use cases. This system meets accomplishes the following goals:
 1. Extracting data from PDF's stored in a knowledge base
 2. Inserting the indexed text data into a vector database
@@ -27,7 +27,7 @@ This fills in the gaps of an LLM, enriching it with specific technical data and 
 Use the 'pdf_to_json' Jupyter Notebook to transform a PDF into useful text. This notebook steps you through the process of using the PyMuPDF package to extract text, convert that text into JSON format, then do some basic cleaning of the data.
 ![alt text](assets/PDFToJSON.png)
 
-## Step 2. Index the data in a marqo database
+## Step 2. Index the data in a vector database
 Use the first half 'marqobook' Jupyter Notebook to set up a Client for the marqo backend hosted in docker and to use the marqo package's functions to vectorize the data and index it.
 ![alt text](assets/PostIndexes.png)
 
@@ -39,5 +39,8 @@ Use the second half of the 'marqobook' to give the queried data and the question
 ```
 #### Answer:
 ```
-Executives need to focus on closing a 20-point utilization gap, as identified by health system executives surveyed. This gap refers to the difference between the optimal exam room utilization of 80-89% and the current utilization rate. While it may be challenging, small improvements in utilization can result in significant cost savings, according to a health system that saw a $140,000 per year increase for every 1% improvement in utilization. Additionally, 70% of executives surveyed expressed interest in solutions that can help close this gap, as proper exam room management is crucial but can be difficult without purpose-built technology.
+Executives need to focus on closing a 20-point utilization gap, as identified by health system executives surveyed. 
+This gap refers to the difference between the optimal exam room utilization of 80-89% and the current utilization rate. 
+While it may be challenging, small improvements in utilization can result in significant cost savings, according to a health system that saw a $140,000 per year increase for every 1% improvement in utilization. 
+Additionally, 70% of executives surveyed expressed interest in solutions that can help close this gap, as proper exam room management is crucial but can be difficult without purpose-built technology.
 ```
