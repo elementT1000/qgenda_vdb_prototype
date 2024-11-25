@@ -1,18 +1,56 @@
-import glob
-import pandas as pd
 from langchain.prompts import PromptTemplate
-import re
 #from text import split_text
 from typing import List, Literal
 import numpy as np
 import torch
 import os
+import re
 
 from transformers import (
-    AutoTokenizer, 
-    AutoModelForSequenceClassification,
     GPT2TokenizerFast
 )
+
+import fitz  # PyMuPDF
+
+def inspect_pdf(path_to_pdf: str):
+    # Open the PDF document
+    pdf_document = path_to_pdf  # Replace with your PDF file path
+    doc = fitz.open(pdf_document)
+
+    # Iterate through each page
+    for page_num in range(doc.page_count):
+        page = doc.load_page(page_num)
+        print(f"Page {page_num + 1}:")
+
+        # Retrieve font information
+        fonts = page.get_fonts(full=True)
+        for font in fonts:
+            xref, ext, font_type, basefont, name, encoding, emb = font
+            print(f"  Font Name: {basefont}")
+            print(f"    Type: {font_type}")
+            print(f"    Encoding: {encoding}")
+            print(f"    Embedded: {'Yes' if emb else 'No'}")
+            print(f"    XRef: {xref}")
+            print(f"    Font Dictionary Name: {name}")
+            print(f"    Extension: {ext}")
+
+def clean_text(text):
+    # Replace specific problematic Unicode characters with desired replacements
+    text = text.replace('\u2019', "'")  # Replace \u2019 with an apostrophe
+    text = text.replace('\u00a9', '©')  # Replace \u00a9 with the copyright symbol
+    text = text.replace('\u201c', '"').replace('\u201d', '"')  # Replace curly quotes with straight quotes
+    text = text.replace('\u2014', '—')  # Replace em dash with proper character
+    text = text.replace('\u00c2', '')  # Remove \u00c2, which may be an encoding artifact
+
+    # Use a regex to remove any other unwanted Unicode sequences that may not have been explicitly addressed
+    text = re.sub(r'\\u[0-9A-Fa-f]{4}', '', text)  # Remove any Unicode character represented by \uXXXX
+
+    # Clean the text by removing extra whitespace and other artifacts
+    text = re.sub(r'\n+', ' ', text)  # Replace new lines (\n and \n\n) with a space
+    text = re.sub(r'\s+', ' ', text)  # Remove extra spaces for clean flow
+    text = re.sub(r'n\d+%.*?\n', '', text)  # Remove numerical charting text
+    
+    return text.strip()
 
 def get_openai_key():
     openai_key = os.getenv('OPENAI_API_KEY')
@@ -41,8 +79,36 @@ def qna_prompt():
     PROMPT = PromptTemplate(template=template, input_variables=["summaries", "question"])
     return PROMPT
 
+def clean_txt_prompt():
+    template = """
+    Given the following extracted parts of a PDF document ("SOURCES"), transcribe only the primary text of the document while strictly removing unnecessary symbols, formatting, and metadata. Please follow these guidelines:
 
-def predict_ce(query, texts, model=None, key='ce'):
+    1. **Remove Encoding Symbols and Format the Text for Natural Flow**:
+    - **Eliminate all newline symbols (`\n`, `\n\n`) completely**: Remove newline symbols even if they are embedded in the text or touching words. Ensure that sentences flow naturally, replacing these symbols with a space where appropriate.
+    - **Replace Unicode characters**: Replace symbols like `\u2019` with their corresponding character (e.g., `\u2019` should become `'`).
+
+    2. **Ignore Non-Primary or Unnecessary Content**:
+    - Skip any metadata or text that is not part of the main narrative (e.g., "Copyright © 2024").
+    - Skip numerical sequences and charting text like `"n40%\n0%\n30%\n20%\n10%"`, and any similar chart or graph label sequences.
+
+    3. **Transcription Expectations**:
+    - Do **not** add any boilerplate or explanatory text.
+    - Ensure that the transcription is coherent, preserving only the meaningful portions of the document, with all sentences flowing smoothly.
+
+    **Note**: The final transcription should be a **clean, readable version** of the main content, without any formatting symbols, numerical sequences, metadata, or extraneous information.
+
+    SOURCES:
+    {summaries}
+    =========
+    ANSWER:
+
+    """
+    prompt = PromptTemplate(template=template, input_variables=["summaries"])
+
+    return prompt
+
+
+'''def predict_ce(query, texts, model=None, key='ce'):
     """ 
     score all the queries with respect to the texts
     """
@@ -65,7 +131,7 @@ def predict_ce(query, texts, model=None, key='ce'):
     with torch.no_grad():
         scores = model(**features).logits
 
-    return softmax(scores)
+    return softmax(scores)'''
 
 def get_sorted_inds(scores):
     """ 
