@@ -1,5 +1,5 @@
 # A Prototype for Retrieval Augmented Generation with a Knowledge Base
-This project uses a series of rudimentary tools to create a system that uses a "Knowledge Base" to give a Large Language Model (LLM) information to generate answers optimized for business use cases. This system meets accomplishes the following goals:
+This project uses a series of rudimentary tools to create a system that leverages a "Knowledge Base" to provide a Large Language Model (LLM) with information to generate answers optimized for business use cases. This system accomplishes the following goals:
 1. Extracting data from PDF's stored in a knowledge base
 2. Inserting the indexed text data into a vector database
 3. Querying that database
@@ -18,8 +18,8 @@ This fills in the gaps of an LLM, enriching it with specific technical data and 
 
 
 ## Prerequisites
-- Have Docker installed on your machine
-- Set up a local [marqo container](https://github.com/marqo-ai/marqo/blob/mainline/README.md)
+- Docker installed on your machine
+- A local [marqo container](https://github.com/marqo-ai/marqo/blob/mainline/README.md) set up
 - An API key for OpenAI (set up in your environment variables)
 
 # Workflow
@@ -28,7 +28,7 @@ Use the 'pdf_to_json' Jupyter Notebook to transform a PDF into useful text. This
 ![alt text](assets/PDFToJSON.png)
 
 ## Step 2. Index the data in a vector database
-Use the first half 'marqobook' Jupyter Notebook to set up a Client for the marqo backend hosted in docker and to use the marqo package's functions to vectorize the data and index it.
+Use the first half 'marqobook' Jupyter Notebook to set up a Client for the marqo backend hosted in docker, and to use the marqo package's functions to vectorize the data and index it.
 ![alt text](assets/PostIndexes.png)
 
 ## Step 3. Set up search prompt and query with LLM
