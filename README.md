@@ -39,8 +39,16 @@ Use the second half of the 'marqobook' to give the queried data and the question
 ```
 #### Answer:
 ```
-Executives need to focus on closing a 20-point utilization gap, as identified by health system executives surveyed. 
-This gap refers to the difference between the optimal exam room utilization of 80-89% and the current utilization rate. 
-While it may be challenging, small improvements in utilization can result in significant cost savings, according to a health system that saw a $140,000 per year increase for every 1% improvement in utilization. 
-Additionally, 70% of executives surveyed expressed interest in solutions that can help close this gap, as proper exam room management is crucial but can be difficult without purpose-built technology.
+Executives need to focus on closing a 20-point utilization gap in exam room usage to align with optimal levels of 80 to 89%. 
+
+- Health system executives indicated that their clinics are operating significantly below optimal utilization, with 72% reporting lower levels.
+- The identified utilization gap averages 20 points from the optimal usage.
+- Closing this gap could dramatically impact health system revenue; for instance, the Orthopedic Director noted potential lost revenue from being able to see more patients daily (35 to 40 instead of 25 to 30).
+- Increasing exam room utilization by 20% could lead to savings of $200,000 per clinic, translating to $2.8 million in annual savings for systems with 14 clinics.
 ```
+
+## Step 4. Evaluate model performance
+Since the input and output will vary widely, we will use a [Model Grading](https://cookbook.openai.com/examples/evaluation/getting_started_with_openai_evals?utm_source=chatgpt.com) strategy to investigate performance. First, we will set up an eval prompt, then run a new model with the source data and the 'ans' variable from the previous step. 
+This model will assess if the output matches the source material, thereby automating the process of checking for correctness. This can be used in a production pipeline to ensure that responses meet quality standards. In the future, this could also be a useful step in a test harness for comparing multiple model's performance.
+
+![alt text](assets/eval_result.png)
